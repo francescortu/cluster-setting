@@ -1,0 +1,93 @@
+# Cluster settings managed by cluster-setting/install.sh
+
+# Create tmux socket dir (useful on compute nodes)
+mkdir -p "/tmp/tmux-$(id -u)" 2>/dev/null
+chmod 700 "/tmp/tmux-$(id -u)" 2>/dev/null
+
+# Nested tmux signal (inner tmux switches prefix via .tmux.conf.local)
+if [ -n "$TMUX" ]; then
+  export TMUX_NESTED=1
+fi
+
+# Prompt palette
+C_BLUE='\[\e[38;5;111m\]'
+C_CYAN='\[\e[38;5;117m\]'
+C_GREEN='\[\e[38;5;150m\]'
+C_MAGENTA='\[\e[38;5;183m\]'
+C_ORANGE='\[\e[38;5;209m\]'
+C_RED='\[\e[38;5;203m\]'
+C_WHITE='\[\e[38;5;253m\]'
+C_GRAY='\[\e[38;5;244m\]'
+C_RESET='\[\e[0m\]'
+
+R_GRAY='\e[38;5;244m'
+R_ORANGE='\e[38;5;209m'
+R_RESET='\e[0m'
+
+export LS_COLORS='di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=01;31:mi=01;37;41:ex=01;32:*.tar=01;31:*.tgz=01;31:*.zip=01;31:*.z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.png=01;35:*.svg=01;35:*.mp4=01;35:*.mkv=01;35:*.mp3=01;36:*.wav=01;36:*.flac=01;36:*.ogg=01;36:'
+
+if [ -z "$TMUX" ]; then
+  export TERM=xterm-256color
+fi
+
+alias ls='ls --color=auto -F --group-directories-first'
+alias ll='ls -lh'
+alias la='ls -A'
+alias l='ls -CF'
+alias grep='grep --color=auto'
+alias diff='diff --color=auto'
+if command -v bat >/dev/null 2>&1; then
+  alias cat='bat -pp'
+  alias preview='bat'
+fi
+
+git_prompt() {
+  local branch
+  branch=$(git branch 2>/dev/null | sed -n 's/^\* \(.*\)/\1/p')
+  if [ -n "$branch" ]; then
+    echo -e " ${R_GRAY}on ${R_ORANGE}git:${branch}${R_RESET}"
+  fi
+}
+
+conda_prompt() {
+  if [ -n "$CONDA_DEFAULT_ENV" ]; then
+    echo -e " \e[38;5;150m(\e[38;5;117m${CONDA_DEFAULT_ENV}\e[38;5;150m)\e[0m"
+  fi
+}
+
+is_compute_node() {
+  [[ "$(hostname -s)" != login* ]]
+}
+
+if is_compute_node; then
+  PS1="\n${C_GREEN}\u@${C_MAGENTA}\h\$(conda_prompt) ${C_GRAY}in ${C_BLUE}\w\$(git_prompt)\n${C_MAGENTA}>${C_RESET} "
+else
+  PS1="\n${C_GREEN}\u@\h\$(conda_prompt) ${C_GRAY}in ${C_BLUE}\w\$(git_prompt)\n${C_BLUE}>${C_RESET} "
+fi
+
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8,fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc,marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8'
+
+export HISTFILE="$HOME/.bash_history"
+shopt -s histappend
+shopt -s cmdhist
+shopt -s lithist
+PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND:-:}"
+HISTSIZE=50000
+HISTFILESIZE=100000
+HISTCONTROL=ignoreboth:erasedups
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+[ -f "$HOME/.fzf.bash" ] && source "$HOME/.fzf.bash"
+
+if [ -d "$HOME/local/nvim/bin" ]; then
+  export PATH="$HOME/local/nvim/bin:$PATH"
+fi
+
+if command -v conda >/dev/null 2>&1; then
+  conda config --set changeps1 false 2>/dev/null || true
+fi
+
+# Put machine-specific secrets and env vars here:
+[ -f "$HOME/.bashrc.private" ] && source "$HOME/.bashrc.private"

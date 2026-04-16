@@ -1,0 +1,12 @@
+{
+  "banner": "never",
+  "allowed_urls": [
+    "https://docs.litellm.ai",
+    "https://openrouter.ai",
+    "https://www.portkey.ai",
+    "https://docs.vllm.ai",
+    "https://docs.portkey.ai",
+    "https://docs.konghq.com",
+    "https://python.langchain.com"
+  ]
+}

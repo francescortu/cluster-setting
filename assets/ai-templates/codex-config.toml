@@ -1,0 +1,6 @@
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "xhigh"
+
+[tui]
+status_line = ["model-with-reasoning", "context-usage", "current-dir", "five-hour-limit", "weekly-limit"]

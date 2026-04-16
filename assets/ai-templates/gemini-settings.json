@@ -1,0 +1,21 @@
+{
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ide": {
+    "hasSeenNudge": true
+  },
+  "general": {
+    "plan": {
+      "modelRouting": false
+    }
+  },
+  "ui": {
+    "inlineThinkingMode": "full"
+  },
+  "model": {
+    "name": "gemini-3.1-pro-preview"
+  }
+}
