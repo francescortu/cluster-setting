@@ -6,6 +6,7 @@ ok() { printf "[OK] %s\n" "$*"; }
 die() { printf "[ERROR] %s\n" "$*" >&2; exit 1; }
 
 has_cmd() { command -v "$1" >/dev/null 2>&1; }
+STATE_HOME="${HOME}/.local/share/cluster-setting"
 
 uniq_list() {
   printf "%s\n" "$@" | awk '!seen[$0]++'
@@ -39,6 +40,27 @@ copy_file() {
   ok "Installed: $dst"
 }
 
+restore_latest_backup() {
+  local target="$1"
+  local latest
+  latest="$(ls -1dt "${target}.bak."* 2>/dev/null | head -n1 || true)"
+  [[ -n "$latest" ]] || return 1
+  rm -rf "$target"
+  mv "$latest" "$target"
+  ok "Restored backup: $target"
+}
+
+remove_exact_line_from_file() {
+  local file="$1"
+  local line="$2"
+  [[ -f "$file" ]] || return 0
+  grep -Fqx "$line" "$file" || return 0
+  backup_if_exists "$file"
+  awk -v line="$line" '$0 != line { print }' "$file" > "${file}.tmp.cluster-setting"
+  mv "${file}.tmp.cluster-setting" "$file"
+  ok "Updated: $file"
+}
+
 ensure_line_in_file() {
   local file="$1"
   local line="$2"
@@ -59,29 +81,25 @@ detect_pkg_manager() {
   fi
 }
 
-try_sudo() {
-  if has_cmd sudo; then
-    sudo "$@"
-  else
-    "$@"
-  fi
-}
-
 install_pkg() {
   local pkg="$1"
   if has_cmd "$pkg"; then
     info "Already installed: $pkg"
     return 0
   fi
+  if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
+    warn "Skipping system package install for '$pkg' (no sudo mode)."
+    return 1
+  fi
 
   local pm
   pm="$(detect_pkg_manager)"
   case "$pm" in
-    apt) try_sudo apt-get update -y >/dev/null 2>&1 || true; try_sudo apt-get install -y "$pkg" ;;
-    dnf) try_sudo dnf install -y "$pkg" ;;
-    yum) try_sudo yum install -y "$pkg" ;;
-    pacman) try_sudo pacman -Sy --noconfirm "$pkg" ;;
-    zypper) try_sudo zypper --non-interactive install "$pkg" ;;
+    apt) apt-get update -y >/dev/null 2>&1 || true; apt-get install -y "$pkg" ;;
+    dnf) dnf install -y "$pkg" ;;
+    yum) yum install -y "$pkg" ;;
+    pacman) pacman -Sy --noconfirm "$pkg" ;;
+    zypper) zypper --non-interactive install "$pkg" ;;
     none) warn "No supported package manager found for $pkg"; return 1 ;;
   esac
 }
@@ -89,5 +107,26 @@ install_pkg() {
 install_npm_global() {
   local pkg="$1"
   has_cmd npm || { warn "npm not found, cannot install $pkg"; return 1; }
-  npm install -g "$pkg"
+  npm install -g "$pkg" || npm install -g --prefix "$HOME/.local" "$pkg"
+}
+
+mark_managed_path() {
+  local module="$1"
+  local path="$2"
+  mkdir -p "$STATE_HOME/managed"
+  touch "$STATE_HOME/managed/${module}.paths"
+  grep -Fqx "$path" "$STATE_HOME/managed/${module}.paths" || echo "$path" >> "$STATE_HOME/managed/${module}.paths"
+}
+
+remove_managed_paths() {
+  local module="$1"
+  local f="$STATE_HOME/managed/${module}.paths"
+  [[ -f "$f" ]] || return 0
+  while IFS= read -r p; do
+    [[ -z "$p" ]] && continue
+    if [[ -e "$p" || -L "$p" ]]; then
+      rm -rf "$p"
+      info "Removed managed path: $p"
+    fi
+  done < "$f"
 }

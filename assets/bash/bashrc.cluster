@@ -1,5 +1,7 @@
 # Cluster settings managed by cluster-setting/install.sh
 
+export PATH="$HOME/.local/bin:$PATH"
+
 # Create tmux socket dir (useful on compute nodes)
 mkdir -p "/tmp/tmux-$(id -u)" 2>/dev/null
 chmod 700 "/tmp/tmux-$(id -u)" 2>/dev/null

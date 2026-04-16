@@ -10,6 +10,7 @@ install_fzf() {
   if ! has_cmd fzf; then
     if [[ ! -d "$HOME/.fzf/.git" ]]; then
       git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+      mark_managed_path fzf "$HOME/.fzf"
     fi
     "$HOME/.fzf/install" --key-bindings --completion --no-update-rc --no-zsh --no-fish
   else

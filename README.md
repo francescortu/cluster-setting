@@ -2,6 +2,8 @@
 
 Portable personal cluster setup with an idempotent module installer.
 
+**Design goal:** user-space install by default (no `sudo` prompts).
+
 ## What this repo installs
 
 - **shell**: PS1 prompt, history sharing, aliases, fzf styling (`~/.bashrc.cluster`)
@@ -41,6 +43,15 @@ Interactive mode now uses a Python TUI:
 ## Re-runnable by design
 
 Run `install.sh` again anytime; it installs only what is missing and backups replaced files as `*.bak.TIMESTAMP`.
+
+## Uninstall / restore
+
+```bash
+chmod +x uninstall.sh
+./uninstall.sh
+```
+
+This restores the most recent backups created by the installer and removes managed user-space paths.
 
 ## Security notes
 
