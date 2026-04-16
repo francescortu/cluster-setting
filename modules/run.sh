@@ -10,6 +10,7 @@ source "$ROOT_DIR/modules/fzf.sh"
 source "$ROOT_DIR/modules/tmux.sh"
 source "$ROOT_DIR/modules/nvim.sh"
 source "$ROOT_DIR/modules/ai.sh"
+source "$ROOT_DIR/modules/gh.sh"
 source "$ROOT_DIR/modules/poetry.sh"
 source "$ROOT_DIR/modules/uv.sh"
 source "$ROOT_DIR/modules/miniconda.sh"
@@ -20,6 +21,7 @@ case "$MODULE" in
   tmux) install_tmux "$ROOT_DIR" ;;
   nvim) install_nvim "$ROOT_DIR" ;;
   ai) install_ai "$ROOT_DIR" ;;
+  gh) install_gh ;;
   poetry) install_poetry "$ROOT_DIR" ;;
   uv) install_uv "$ROOT_DIR" ;;
   miniconda) install_miniconda "$ROOT_DIR" ;;

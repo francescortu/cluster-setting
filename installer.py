@@ -24,6 +24,7 @@ MODULES = [
     Module("tmux", "tmux", "oh-my-tmux + dracula theme + your local config"),
     Module("nvim", "Neovim", "NvChad-based config from this repo"),
     Module("ai", "AI CLIs", "Copilot/Codex/Gemini/Claude + safe config templates"),
+    Module("gh", "GitHub CLI", "Install gh (GitHub CLI)"),
     Module("poetry", "Poetry", "Install Poetry"),
     Module("uv", "uv", "Install uv"),
     Module("miniconda", "Miniconda", "Install Miniconda"),

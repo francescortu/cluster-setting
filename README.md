@@ -9,6 +9,7 @@ Portable personal cluster setup with an idempotent module installer.
 - **tmux**: `oh-my-tmux`, your `.tmux.conf.local`, dracula theme
 - **nvim**: your NvChad-based Neovim config
 - **ai**: Copilot, Codex, Gemini, Claude CLIs + safe config templates
+- **gh**: GitHub CLI (`gh`)
 - **poetry**: Poetry installer
 - **uv**: uv installer
 - **miniconda**: Miniconda installer
@@ -32,9 +33,9 @@ Interactive mode now uses a Python TUI:
 
 ```bash
 ./install.sh --list
-./install.sh --modules shell,fzf,tmux,nvim,ai
+./install.sh --modules shell,fzf,tmux,nvim,ai,gh
 ./install.sh --all
-./install.sh --modules poetry,uv,miniconda
+./install.sh --modules gh,poetry,uv,miniconda
 ```
 
 ## Re-runnable by design
