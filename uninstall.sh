@@ -29,6 +29,7 @@ remove_managed_paths fzf || true
 
 # gh / miniconda managed user-space installs
 remove_managed_paths gh || true
+remove_managed_paths code || true
 remove_managed_paths miniconda || true
 
 ok "Uninstall completed. Some tools installed outside this repo (npm/pipx/etc.) are left untouched."

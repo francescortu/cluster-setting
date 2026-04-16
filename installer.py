@@ -24,6 +24,7 @@ MODULES = [
     Module("nvim", "Neovim", "NvChad-based config from this repo"),
     Module("ai", "AI CLIs", "Copilot/Codex/Gemini/Claude + safe config templates"),
     Module("gh", "GitHub CLI", "Install gh (GitHub CLI)"),
+    Module("code", "VS Code CLI", "Install code CLI (for code tunnel)"),
     Module("poetry", "Poetry", "Install Poetry"),
     Module("uv", "uv", "Install uv"),
     Module("miniconda", "Miniconda", "Install Miniconda"),

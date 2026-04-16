@@ -12,6 +12,7 @@ Portable personal cluster setup with an idempotent module installer.
 - **nvim**: your NvChad-based Neovim config
 - **ai**: Copilot, Codex, Gemini, Claude CLIs + safe config templates
 - **gh**: GitHub CLI (`gh`)
+- **code**: VS Code CLI (`code`) for `code tunnel`
 - **poetry**: Poetry installer
 - **uv**: uv installer
 - **miniconda**: Miniconda installer
@@ -37,9 +38,9 @@ Interactive mode now uses a Python TUI:
 
 ```bash
 ./install.sh --list
-./install.sh --modules shell,fzf,tmux,nvim,ai,gh
+./install.sh --modules shell,fzf,tmux,nvim,ai,gh,code
 ./install.sh --all
-./install.sh --modules gh,poetry,uv,miniconda
+./install.sh --modules gh,code,poetry,uv,miniconda
 ```
 
 ## Re-runnable by design

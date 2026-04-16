@@ -11,6 +11,7 @@ source "$ROOT_DIR/modules/tmux.sh"
 source "$ROOT_DIR/modules/nvim.sh"
 source "$ROOT_DIR/modules/ai.sh"
 source "$ROOT_DIR/modules/gh.sh"
+source "$ROOT_DIR/modules/code.sh"
 source "$ROOT_DIR/modules/poetry.sh"
 source "$ROOT_DIR/modules/uv.sh"
 source "$ROOT_DIR/modules/miniconda.sh"
@@ -23,6 +24,7 @@ case "$MODULE" in
   ai) install_ai "$ROOT_DIR" ;;
   ai-login) login_ai_tools ;;
   gh) install_gh ;;
+  code) install_code ;;
   poetry) install_poetry "$ROOT_DIR" ;;
   uv) install_uv "$ROOT_DIR" ;;
   miniconda) install_miniconda "$ROOT_DIR" ;;
