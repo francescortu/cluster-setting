@@ -22,6 +22,12 @@ chmod +x install.sh
 ./install.sh
 ```
 
+Interactive mode now uses a Python TUI:
+- `↑/↓` move
+- `space` toggle module
+- `a` toggle all
+- `enter` run selected modules
+
 ## Non-interactive examples
 
 ```bash
