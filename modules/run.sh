@@ -21,6 +21,7 @@ case "$MODULE" in
   tmux) install_tmux "$ROOT_DIR" ;;
   nvim) install_nvim "$ROOT_DIR" ;;
   ai) install_ai "$ROOT_DIR" ;;
+  ai-login) login_ai_tools ;;
   gh) install_gh ;;
   poetry) install_poetry "$ROOT_DIR" ;;
   uv) install_uv "$ROOT_DIR" ;;

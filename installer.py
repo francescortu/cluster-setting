@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import os
 import subprocess
 import sys
 import termios
@@ -129,8 +128,23 @@ def interactive_select() -> list[str]:
 
 
 def run_module(root: Path, key: str, idx: int, total: int) -> None:
-    print(f"{BOLD}{GREEN}[{idx}/{total}] Installing {key}...{RESET}")
+    print(f"\n{BOLD}{GREEN}[{idx}/{total}] Installing {key}...{RESET}", flush=True)
+    print(f"{DIM}{'-' * 72}{RESET}", flush=True)
     subprocess.run(["bash", str(root / "modules" / "run.sh"), key, str(root)], check=True)
+    print(f"{DIM}{'-' * 72}{RESET}", flush=True)
+
+
+def ask_yes_no(prompt: str, default_no: bool = True) -> bool:
+    suffix = " [y/N]: " if default_no else " [Y/n]: "
+    while True:
+        ans = input(prompt + suffix).strip().lower()
+        if not ans:
+            return not default_no
+        if ans in ("y", "yes"):
+            return True
+        if ans in ("n", "no"):
+            return False
+        print("Please answer y or n.")
 
 
 def parse_module_list(raw: str) -> list[str]:
@@ -147,6 +161,11 @@ def parse_module_list(raw: str) -> list[str]:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(line_buffering=True)
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(line_buffering=True)
+
     args = parse_args()
     root = Path(__file__).resolve().parent
 
@@ -155,6 +174,7 @@ def main() -> int:
         return 0
 
     selected: list[str] = []
+    interactive_mode = not (args.all or args.modules or args.non_interactive)
     if args.all:
         selected = [m.key for m in MODULES]
     elif args.modules:
@@ -167,6 +187,11 @@ def main() -> int:
     print(f"{BOLD}Modules:{RESET} {', '.join(selected)}")
     for i, key in enumerate(selected, start=1):
         run_module(root, key, i, len(selected))
+
+    if "ai" in selected and interactive_mode and sys.stdin.isatty():
+        if ask_yes_no("Run AI logins now in this same terminal?"):
+            run_module(root, "ai-login", len(selected) + 1, len(selected) + 1)
+
     print(f"\n{GREEN}Done. Re-run install.sh anytime to add more modules.{RESET}")
     return 0
 

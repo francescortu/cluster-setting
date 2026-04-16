@@ -30,6 +30,8 @@ Interactive mode now uses a Python TUI:
 - `space` toggle module
 - `a` toggle all
 - `enter` run selected modules
+- installer prints per-module live output separators
+- when `ai` is selected interactively, it can run `copilot/codex/gemini/claude` login flow in the same terminal
 
 ## Non-interactive examples
 
